@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
 # Firefox Version Manager (.fvm)
-# Usage: ./.fvm <command> [options]
-# Commands: install, exec, run, list, help
-# Example: ./.fvm install 50.0
-# Example: ./.fvm exec 50.0
-# Example: ./.fvm run 50.0 --new-window
+# Version: 0.1.0
 
-set -e  # Exit on any error
+# Constants
+FVM_VERSION="0.1.0"
 
 # Default installation directory
 DEFAULT_INSTALL_DIR="${FVM_INSTALL_PATH:-$HOME}"
 
+# Function to show version
+show_version() {
+    echo "Firefox Version Manager v${FVM_VERSION}"
+}
+
 # Function to show usage
 show_usage() {
-    echo "Firefox Version Manager (.fvm)"
+    show_version
     echo ""
     echo "Usage: ./.fvm <command> [options]"
     echo ""
@@ -26,6 +28,7 @@ show_usage() {
     echo "  list                  List installed versions"
     echo "  list-remote          List available versions from Mozilla"
     echo "  list-remote --all    List all available versions (including beta/ESR)"
+    echo "  version              Show fvm version"
     echo "  help                  Show this help message"
     echo ""
     echo "Environment Variables:"
@@ -496,6 +499,9 @@ case "$COMMAND" in
         else
             list_available_versions
         fi
+        ;;
+    "version")
+        show_version
         ;;
     "help"|"--help"|"-h")
         show_usage

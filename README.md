@@ -1,5 +1,7 @@
 # Firefox Version Manager (fvm)
 
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/pablo-guelu/fvm/releases)
+
 A simple version manager for Firefox that allows you to easily install, switch between, and manage different Firefox versions from the command line on Linux systems.
 
 ## Features
@@ -78,6 +80,9 @@ chmod +x fvm.sh
 # List all versions (including beta/ESR)
 ./fvm.sh list-remote --all
 
+# Show fvm version
+./fvm.sh version
+
 # Uninstall a version
 ./fvm.sh uninstall 50.0
 
@@ -137,4 +142,21 @@ Note: Testing requires downloading Firefox (~50MB+ per version).
 - Each version is installed with its own isolated profile
 - Updates are disabled by default through `policies.json`
 - The script requires write permissions to the installation directory
+
+## Changelog
+
+### [0.1.0] - 2024-03-20
+
+Initial release with core functionality:
+
+- Basic version management (install, uninstall, exec, run)
+- Support for latest and specific Firefox versions
+- Version existence checking
+- Improved error handling
+- Isolated profiles and environment variables
+- Auto-update disabled by default
+- Remote version listing
+- Installation directory customization
+
+[0.1.0]: https://github.com/pablo-guelu/fvm/releases/tag/v0.1.0
 
