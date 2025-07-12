@@ -6,7 +6,7 @@
 set -e # Exit on any error
 
 FVM_INSTALL_DIR="${FVM_INSTALL_DIR:-$HOME/.fvm}"
-FVM_SCRIPT_URL="https://raw.githubusercontent.com/yourusername/fvm/main/.fvm"
+FVM_SCRIPT_URL="https://raw.githubusercontent.com/pablo-guelu/fvm/main/fvm.sh"
 
 # Function to check if command exists
 has_command() {

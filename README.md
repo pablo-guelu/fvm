@@ -25,7 +25,7 @@ The following tools are required:
 ### Quick Install
 
 ```bash
-curl -o- https://raw.githubusercontent.com/pablo-guelu/fvm/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/pablo-guelu/fvm/main/install.sh | bash
 ```
 
 This will:
@@ -36,7 +36,7 @@ This will:
 You can customize the installation directory where diffrent versions of Firefox are installed by setting `FVM_INSTALL_DIR`:
 
 ```bash
-FVM_INSTALL_DIR=/custom/path curl -o- https://raw.githubusercontent.com/pablo-guelu/fvm/main/install.sh | bash
+FVM_INSTALL_DIR=/custom/path curl -fsSL https://raw.githubusercontent.com/pablo-guelu/fvm/main/install.sh | bash
 ```
 
 ### Manual Install
