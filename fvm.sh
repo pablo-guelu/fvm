@@ -76,6 +76,20 @@ list_installed_versions() {
     fi
 }
 
+# Function to check if Firefox version exists in Mozilla's FTP
+check_version_exists() {
+    local VERSION="$1"
+    local ARCH="$(uname -m)"
+    local CHECK_URL="http://ftp.mozilla.org/pub/firefox/releases/${VERSION}/linux-${ARCH}/en-US/firefox-${VERSION}.tar.bz2"
+    
+    # Use wget's spider mode to check if the URL exists
+    if wget --spider "$CHECK_URL" 2>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Function to install Firefox
 install_firefox() {
     local VERSION="$1"
@@ -127,7 +141,7 @@ install_firefox() {
         DOWNLOAD_FILE="${TEMP_DIR}/firefox-latest.tar.bz2"
         echo "Downloading latest Firefox..."
         if ! wget -q --show-progress -O "${DOWNLOAD_FILE}" "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US"; then
-            echo "Error: Failed to download latest Firefox"
+            echo "Error: Failed to download latest Firefox. Please check your internet connection."
             rm -rf "$TEMP_DIR"
             return 1
         fi
@@ -160,7 +174,6 @@ install_firefox() {
             return 1
         fi
 
-        echo "Reading version from application.ini..."
         VERSION=$(grep -E "^Version=" firefox/application.ini | cut -d'=' -f2)
         if [ -z "$VERSION" ]; then
             echo "Error: Could not determine Firefox version"
@@ -168,6 +181,13 @@ install_firefox() {
             return 1
         fi
         echo "Latest version is: $VERSION"
+    else
+        # Check if the specified version exists before attempting to download
+        if ! check_version_exists "$VERSION"; then
+            echo "Error: Firefox version ${VERSION} does not exist."
+            echo "Use './.fvm list-remote' to see available versions."
+            return 1
+        fi
     fi
     
     ARCH="$(uname -m)"
@@ -193,9 +213,19 @@ install_firefox() {
         echo "Extracting Firefox ${VERSION} to ${FINAL_INSTALL_DIR}..."
         cd "$FINAL_INSTALL_DIR"
         if [[ "${FILE_TYPE}" == *"XZ compressed data"* ]]; then
-            tar -xJf "${DOWNLOAD_FILE}" --strip-components=1
+            if ! tar -xJf "${DOWNLOAD_FILE}" --strip-components=1; then
+                echo "Error: Failed to extract Firefox ${VERSION}"
+                rm -rf "$FINAL_INSTALL_DIR"
+                rm -rf "$TEMP_DIR"
+                return 1
+            fi
         else
-            tar -xjf "${DOWNLOAD_FILE}" --strip-components=1
+            if ! tar -xjf "${DOWNLOAD_FILE}" --strip-components=1; then
+                echo "Error: Failed to extract Firefox ${VERSION}"
+                rm -rf "$FINAL_INSTALL_DIR"
+                rm -rf "$TEMP_DIR"
+                return 1
+            fi
         fi
         rm -rf "$TEMP_DIR"
         echo "Cleaned up temp directory"
@@ -205,8 +235,20 @@ install_firefox() {
         
         # Download and extract directly to the target directory
         cd "$FINAL_INSTALL_DIR"
-        wget -q --show-progress "$DOWNLOAD_URL" -O firefox-${VERSION}.tar.bz2
-        tar -xjf firefox-${VERSION}.tar.bz2 --strip-components=1
+        if ! wget -q --show-progress "$DOWNLOAD_URL" -O firefox-${VERSION}.tar.bz2; then
+            echo "Error: Failed to download Firefox ${VERSION}."
+            echo "Please check your internet connection and verify the version exists."
+            echo "Use './.fvm list-remote' to see available versions."
+            rm -rf "$FINAL_INSTALL_DIR"
+            return 1
+        fi
+        
+        if ! tar -xjf firefox-${VERSION}.tar.bz2 --strip-components=1; then
+            echo "Error: Failed to extract Firefox ${VERSION}."
+            rm -f firefox-${VERSION}.tar.bz2
+            rm -rf "$FINAL_INSTALL_DIR"
+            return 1
+        fi
         rm firefox-${VERSION}.tar.bz2
     fi
     
