@@ -58,7 +58,6 @@ is_firefox_installed() {
     local VERSION="$1"
     local INSTALL_DIR="${2:-$DEFAULT_INSTALL_DIR}"
     local FIREFOX_DIR="$(get_firefox_path "$VERSION" "$INSTALL_DIR")"
-    echo "[DEBUG] Checking: $FIREFOX_DIR/firefox" 1>&2
     [ -d "$FIREFOX_DIR" ] && [ -x "$FIREFOX_DIR/firefox" ]
 }
 
@@ -101,11 +100,8 @@ install_firefox() {
     local TEMP_DIR=""
     local DOWNLOAD_FILE=""
     
-    echo "[DEBUG] Starting installation with VERSION='$VERSION'"
-    
     # Expand tilde in installation directory
     INSTALL_DIR="${INSTALL_DIR/#\~/$HOME}"
-    echo "[DEBUG] Installation directory: $INSTALL_DIR"
     
     # Check if we have wget
     if ! command -v wget &> /dev/null; then
@@ -134,7 +130,6 @@ install_firefox() {
         
         # Create a temporary directory for downloading
         TEMP_DIR=$(mktemp -d)
-        echo "[DEBUG] Created temp directory: $TEMP_DIR"
         if [ -z "${TEMP_DIR}" ]; then
             echo "Error: Unable to create temporary directory"
             return 1
@@ -151,7 +146,6 @@ install_firefox() {
 
         # First try to identify the file type
         FILE_TYPE=$(file -b "${DOWNLOAD_FILE}")
-        echo "[DEBUG] Downloaded file type: ${FILE_TYPE}"
 
         # Extract version number from the downloaded binary
         cd "${TEMP_DIR}"
@@ -195,7 +189,6 @@ install_firefox() {
     
     ARCH="$(uname -m)"
     FINAL_INSTALL_DIR="${INSTALL_DIR}/firefox-${VERSION}"
-    echo "[DEBUG] Final installation directory: $FINAL_INSTALL_DIR"
     
     echo "Installing Firefox version ${VERSION}..."
     echo "Installation directory: ${FINAL_INSTALL_DIR}"
@@ -210,7 +203,6 @@ install_firefox() {
     
     # Create installation directory
     mkdir -p "$FINAL_INSTALL_DIR"
-    echo "[DEBUG] Created installation directory"
     
     if [ $IS_LATEST -eq 1 ]; then
         echo "Extracting Firefox ${VERSION} to ${FINAL_INSTALL_DIR}..."
@@ -231,7 +223,6 @@ install_firefox() {
             fi
         fi
         rm -rf "$TEMP_DIR"
-        echo "Cleaned up temp directory"
     else
         echo "Downloading and extracting Firefox ${VERSION} directly to ${FINAL_INSTALL_DIR}..."
         DOWNLOAD_URL="http://ftp.mozilla.org/pub/firefox/releases/${VERSION}/linux-${ARCH}/en-US/firefox-${VERSION}.tar.bz2"
@@ -257,7 +248,6 @@ install_firefox() {
     
     # Set permissions
     chmod +x firefox
-    echo "[DEBUG] Set executable permissions"
     
     # Create distribution directory and policies.json to disable updates
     mkdir -p "${FINAL_INSTALL_DIR}/distribution"
@@ -268,7 +258,6 @@ install_firefox() {
     }
 }
 EOF
-    echo "[DEBUG] Created policies.json"
     
     echo "Firefox ${VERSION} installed successfully!"
     echo "Location: ${FINAL_INSTALL_DIR}"
@@ -455,8 +444,6 @@ fi
 
 COMMAND="$1"
 shift
-
-echo "[DEBUG] Command: $COMMAND, Remaining args: $@"
 
 case "$COMMAND" in
     "install")
