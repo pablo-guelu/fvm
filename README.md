@@ -60,34 +60,34 @@ chmod +x fvm.sh
 
 ```bash
 # Install latest Firefox version
-./fvm.sh install
+fvm install
 
 # Install specific Firefox version
-./fvm.sh install 50.0
+fvm install 50.0
 
 # Execute Firefox version
-./fvm.sh exec 50.0
+fvm exec 50.0
 
 # Run Firefox with arguments
-./fvm.sh run 50.0 --new-window
+fvm run 50.0 --new-window
 
 # List installed versions
-./fvm.sh list
+fvm list
 
 # List available versions (release only)
-./fvm.sh list-remote
+fvm list-remote
 
 # List all versions (including beta/ESR)
-./fvm.sh list-remote --all
+fvm list-remote --all
 
 # Show fvm version
-./fvm.sh version
+fvm version
 
 # Uninstall a version
-./fvm.sh uninstall 50.0
+fvm uninstall 50.0
 
 # Show help
-./fvm.sh help
+fvm help
 ```
 
 ### Environment Variables
